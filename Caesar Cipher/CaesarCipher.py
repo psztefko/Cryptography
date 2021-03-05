@@ -4,9 +4,9 @@ class CaesarCipher():
 
     ALPHABET_SIZE = 26
     SMALL_A_ASCII_CODE = 97
-    ENGLISH_LETTER_PROBABILITIES = [0.073, 0.009, 0.030, 0.044, 0.130, 0.028, 0.016, 0.035, 0.074,
-                                    0.002, 0.003, 0.035, 0.025, 0.078, 0.074, 0.027, 0.003,
-                                    0.077, 0.063, 0.093, 0.027, 0.013, 0.016, 0.005, 0.019, 0.001]
+    ENGLISH_LETTER_PROBABILITIES = [
+		0.08167, 0.01492, 0.02782, 0.04253, 0.12702, 0.02228, 0.02015, 0.06094, 0.06966, 0.00153, 0.00772, 0.04025, 0.02406,
+		0.06749, 0.07507, 0.01929, 0.00095, 0.05987, 0.06327, 0.09056, 0.02758, 0.00978, 0.02360, 0.00150, 0.01974, 0.00074];
 
     # Encrypts plain text using given key
     def encrypt(self, string: str, key: int) -> str:
@@ -56,8 +56,8 @@ class CaesarCipher():
             dictionaryOfGuesses[i + 1] = plainText
         return dictionaryOfGuesses
 
-
-    def calculateEntropy(self, string: str):
+    # Calculating entropy of given string
+    def calculateEntropy(self, string: str) -> float:
         sum = 0
         spaces = 0
 
@@ -71,11 +71,11 @@ class CaesarCipher():
         return -sum / math.log(2) / (len(string) - spaces)
 
     # Automatically cracks key by comparing entropy of every possibility (string with lowest entropy is most probably correct answer)
-    def automateHack(self, dictOfPossibilities):
+    def automateHack(self, dictOfPossibilities) -> str:
         entropy = float('inf')
         righKey = -1
         for key, value in dictOfPossibilities.items():
-            currentEntropy = self.calculateEntropy(self.decrypt(value, key + 1))
+            currentEntropy = self.calculateEntropy(value)
             if currentEntropy < entropy:
                 entropy = currentEntropy
                 righKey = key

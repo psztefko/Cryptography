@@ -1,4 +1,3 @@
-import math
 from CaesarCipher import CaesarCipher
 
 
@@ -7,10 +6,9 @@ key = int(input('Wprowadź klucz: '))
 
 cc = CaesarCipher()
 
-print('Zaszyfrowana wiadomość: ' + cc.encrypt(string, key))
-
-print('Odszyfrowana wiadomość: ' + cc.decrypt(string, key))
-
+# print('Zaszyfrowana wiadomość: ' + cc.encrypt(string, key))
+#
+# print('Odszyfrowana wiadomość: ' + cc.decrypt(string, key))
 
 x = int(input('Złam szyfr automatycznie (1) lub manualnie (2): '))
 
