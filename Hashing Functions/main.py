@@ -45,20 +45,21 @@ def HashFile(filename: str):
         raise FileNotFoundError('File not found')
 
 def GenerateString(size: int = 10):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=random.randrange(size)))
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=size))
 
 def RepresentHashTime(size: int = 10):
     data = {
         'length': [],
         'time': []
     }
-    for i in range(size):
-        randomString = GenerateString()
+    for i in range(1, size + 1):
+        randomString = GenerateString(i)
         data['length'].append(len(randomString))
         data['time'].append(timeit.timeit(lambda: hs.new('md5', randomString.encode("UTF-8"))))
 
     plot = px.line(data, x='length', y='time')
     plot.show()
+
 
 
 
