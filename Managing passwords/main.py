@@ -1,32 +1,27 @@
-import getpass
-import hashlib
-import os
-import binascii
+from getpass import getpass
+from src.Database import ManageDatabase
+from src.ManagePassword import ManagePassword
 
-#password1 = getpass.getpass(prompt='Password: ', stream=None) ??
+db = ManageDatabase()
+
+#db.create_table()
+#db.insert_password('abba')
+
+p = ManagePassword()
+
+provided_password = input('Podaj hasło: ')
+
+if input('Powtórz hasło: ') == provided_password:
+    print('Hasła są takie same')
+    #hash password
+    #save to database
+else:
+    print('Hasła nie są takie same!')
 
 
-def hash_password(password):
-    """Hash a password for storing"""
-    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),
-                                salt, 100000)
-    pwdhash = binascii.hexlify(pwdhash)
-    return (salt + pwdhash).decode('ascii')
+#verify password
 
-def verify_password(stored_password, provided_password):
-    """Verify stored password with one provided by user"""
-    salt = stored_password[:64]
-    stored_password = stored_password[64:]
-    pwdhash = hashlib.pbkdf2_hmac('sha512',
-                                  provided_password.encode('utf-8'),
-                                  salt.encode('ascii'),
-                                  100000)
-    pwdhash = binascii.hexlify(pwdhash).decode('ascii')
-    return pwdhash == stored_password
+pas = p.hash_password(provided_password)
 
-password1 = getpass.getpass()
-password2 = input('Powtórz hasło: ')
+print(p.verify_password(pas, provided_password))
 
-if password1 != password2:
-    print('Błąd!')
