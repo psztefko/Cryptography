@@ -1,10 +1,11 @@
-
 import hashlib
 import os
 import binascii
 
 
 class ManagePassword():
+    """Performs operations on passwords"""
+
 
     def hash_password(self, password):
         """Hash a password for storing"""
