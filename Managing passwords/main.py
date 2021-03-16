@@ -4,8 +4,8 @@ from src.ManagePassword import ManagePassword
 
 db = ManageDatabase()
 
-#db.create_table()
-#db.insert_password('abba')
+db.create_table()
+db.insert_password('abba')
 
 p = ManagePassword()
 
