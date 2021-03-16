@@ -35,13 +35,13 @@ class ManageDatabase():
         cursor = conn.cursor()
         try:
             rows = cursor.execute('''SELECT * FROM passwords''').fetchall()
-            x = slice(2, 194)
-            for row in rows:
-                row = str(row[x])
-                print(self.m.verify_password(row, provided_password))
-                if self.m.verify_password(row, provided_password):
-                    return True
-            return False
+            if len(rows) != 0:
+                for row in rows[0]:
+                    if self.m.verify_password(row, provided_password):
+                        return True
+                return False
+            else:
+                return False
         except Exception as e:
             print('Error ocurred while checking if password is already in database \nError message: %s' % e)
 
