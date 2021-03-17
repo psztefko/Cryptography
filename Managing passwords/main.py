@@ -1,16 +1,18 @@
 from getpass import getpass
-from src.Database import ManageDatabase
+from src.ManageDatabase import ManageDatabase
 
 
-provided_password = input('Podaj hasło: ')
+if __name__ == '__main__':
 
-while True:
-    if input('Powtórz hasło: ') == provided_password:
-        break
-    else:
-        print('Hasła nie są takie same!')
+    provided_password = input('Podaj hasło: ')
 
-db = ManageDatabase()
-db.create_table()
-db.insert_password(provided_password)
+    while True:
+        if input('Powtórz hasło: ') == provided_password:
+            break
+        else:
+            print('Hasła nie są takie same!')
+
+    db = ManageDatabase()
+    db.create_table()
+    db.insert_password(provided_password)
 
