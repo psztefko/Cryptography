@@ -31,7 +31,7 @@ class ManageDatabase():
                 self.logger.info('Table already exists')
 
         except Exception as e:
-            self.logger.info('Error ocurred while creating database table \nError: %s' % e)
+            self.logger.error('Error ocurred while creating database table \nError message: %s' % e)
 
         conn.close()
 
@@ -53,7 +53,7 @@ class ManageDatabase():
             else:
                 return False
         except Exception as e:
-            self.logger.info('Error ocurred while checking if password is already in database \nError message: %s' % e)
+            self.logger.error('Error ocurred while checking if password is already in database \nError message: %s' % e)
         conn.close()
 
 
@@ -73,6 +73,6 @@ class ManageDatabase():
                 conn.commit()
                 self.logger.info('Password succesfully added to database')
         except Exception as e:
-            self.logger.info('Error ocurred while inserting password into database table \nError message: %s' % e)
+            self.logger.error('Error ocurred while inserting password into database table \nError message: %s' % e)
 
         conn.close()
