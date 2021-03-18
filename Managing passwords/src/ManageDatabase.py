@@ -12,10 +12,24 @@ class ManageDatabase():
         self.m = ManagePassword()
 
     def __connect_with_database(self):
-        return sqlite3.connect('database.db')
+        """ create a database connection to the SQLite database
+           :param None
+           :return: Connection object or None
+        """
+
+        conn = None
+        try:
+            conn = sqlite3.connect('database.db')
+        except Exception as e:
+            self.logger.error('Error ocurred while connecting with database \nError message: %s' % e)
+
+        return conn
 
     def create_table(self):
-        """Checking if table for passwords exists and if not, creates one"""
+        """Checking if table for passwords exists and if not, creates one
+            :param None
+            :return None
+        """
 
         conn = self.__connect_with_database()
         cursor = conn.cursor()
@@ -37,7 +51,10 @@ class ManageDatabase():
 
 
     def __check_whether_password_exists(self, provided_password):
-        """Checking if password already is in database"""
+        """Checking if password already is in database
+            :param provided_password: string
+            :return bool True(if succeed) or False (in case of failure)
+        """
 
         conn = self.__connect_with_database()
         cursor = conn.cursor()
@@ -58,7 +75,10 @@ class ManageDatabase():
 
 
     def insert_password(self, password):
-        """Insert password into database if it's unique"""
+        """Insert password into database if it's unique
+            :param password: string
+            :return: None
+        """
 
         conn = self.__connect_with_database()
         cursor = conn.cursor()

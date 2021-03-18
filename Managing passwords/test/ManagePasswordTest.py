@@ -1,18 +1,15 @@
-from unittest import TestCase
 from src.ManageDatabase import ManagePassword
 
 
-class ManagePasswordTest():
+
+def test_init(self):
+    m = ManagePassword()
+    assert self.assertIsInstance(m, ManagePassword) == True
 
 
-    def test_init(self):
-        m = ManagePassword()
-        self.assertIsInstance(m, ManagePassword)
-
-
-    def test_verify_password(self):
-        m = ManagePassword()
-        hashedPassword = m.hash_password('sample password')
-        m.assertTrue(m.verify_password(hashedPassword, 'sample password'))
+def test_verify_password(self):
+    m = ManagePassword()
+    hashedPassword = m.hash_password('sample password')
+    assert (m.verify_password(hashedPassword, 'sample password')) == True
 
 
