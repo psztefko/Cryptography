@@ -14,3 +14,5 @@ class ManagePasswordTest():
         m = ManagePassword()
         hashedPassword = m.hash_password('sample password')
         m.assertTrue(m.verify_password(hashedPassword, 'sample password'))
+
+
