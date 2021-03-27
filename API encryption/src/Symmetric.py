@@ -1,30 +1,18 @@
-from fastapi import FastAPI
 from cryptography.fernet import Fernet
-
-app = FastAPI()
 
 class Symmetric:
 
 
-    symmetricKey :str
+    key :str
 
-    @app.get("/symmetric/key")
-    def get_key(self):
-        """Returns a randomly generated symmetric key in the form of HEX"""
-        return self.symmetricKey
-
-
-    @app.post("/symmetric/key")
-    def set_key(self):
-        """Sets the symmetric key provided in the form of HEX in request on the server"""
+    def create_key(self):
         return Fernet.generate_key().hex()
 
+    def set_key(self, key):
+        self.key = key
 
-    @app.post("/symmetric/encode")
-    def symmetric_encode(self, message: str):
-        """Sends a message and as a result returns it encrypted"""
+    def encode(self, message: str) -> hex:
+        return Fernet(bytearray.fromhex(self.key)).encrypt(message).hex()
 
-
-    @app.post("/symmetric/decode")
-    def symmetric_decode(self, message: str):
-        """Sends a message and as a result returns it decrypted"""
+    def decode(self, message: str):
+        return Fernet(self.key).decrypt(message).hex()
