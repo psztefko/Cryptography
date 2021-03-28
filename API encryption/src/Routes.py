@@ -40,6 +40,7 @@ asymmetric = Asymmetric()
 @app.get("/asymmetric/key")
 def get_asymmetric_key():
     """Returns new public and private key in the form of HEX (in JSON as dict) and sets it on the server"""
+
     return asymmetric.create_private_and_public_key()
 
 
@@ -49,8 +50,10 @@ def get_ssh_key():
 
 
 @app.post("/asymmetric/key")
-def set_asymmetric_key():
+def set_asymmetric_key(privateKey: str, publicKey: str):
     """Sets the public and private key in the form of HEX (in JSON as dict)"""
+
+    asymmetric.set_key_values(privateKey, publicKey)
 
 
 @app.post("/asymmetric/verify")
