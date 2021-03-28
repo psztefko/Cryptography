@@ -1,5 +1,7 @@
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
 import logging
 
 
@@ -37,4 +39,16 @@ class Asymmetric:
 
         self.logger.info("Key values setted successfully")
 
+        return self.keys
 
+    def sign_message(self, message):
+        """Takes message and signs it using private key"""
+
+        return self.keys["privateKey"].sign(
+            message,
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()),
+                salt_length=padding.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256()
+        )

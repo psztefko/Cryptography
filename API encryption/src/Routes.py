@@ -53,15 +53,17 @@ def get_ssh_key():
 def set_asymmetric_key(privateKey: str, publicKey: str):
     """Sets the public and private key in the form of HEX (in JSON as dict)"""
 
-    asymmetric.set_key_values(privateKey, publicKey)
-
-
-@app.post("/asymmetric/verify")
-def verify_asymmetric_key():
-    """Using the currently set private key, signs the message and returns it with the signed one"""
+    return asymmetric.set_key_values(privateKey, publicKey)
 
 
 @app.post("/asymmetric/sign")
+def sign_message(message: str):
+    """Using the currently set private key, signs the message and returns it with the signed one"""
+
+    return asymmetric.sign_message(message)
+
+
+@app.post("/asymmetric/verify")
 def verify_asymmetric_public_key():
     """Using the currently set public key, verify if the message was encrypted with it"""
 
