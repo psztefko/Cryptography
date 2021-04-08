@@ -163,11 +163,14 @@ class Asymmetric:
     def decrypt_messege(self, message: str) -> bytes:
         """Gets encrypted message and returns it decrypted"""
 
-        return self.privateKey.decrypt(
-            base64.b64decode(message),
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
+        try:
+            return self.privateKey.decrypt(
+                base64.b64decode(message),
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
             )
-        )
+        except:
+            self.logger.error("Error ocurred while decrypting message")
