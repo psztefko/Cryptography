@@ -1,5 +1,7 @@
 import base64
+import hashlib
 
+from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -21,8 +23,6 @@ class Asymmetric:
         keys = self.__generate_rsa_keys()
         self.privateKey = keys["privateKey"]
         self.publicKey = keys["publicKey"]
-        self.signature = None
-
 
 
     def __generate_rsa_keys(self):
@@ -87,23 +87,30 @@ class Asymmetric:
     def get_keys_in_ssh(self):
         """Returns keys in OpenSSH format"""
 
-        if self.publicKey is None:
-            return {"privateKey": self.privateKey, "publicKey": self.publicKey}
-        else:
-            publicSSH: str = self.publicKey
-            privateSSH: str = self.privateKey
+        privateSSH = self.privateKey.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.OpenSSH,
+            encryption_algorithm=serialization.NoEncryption()
+        ).hex()
 
-            return {
-                'public_key': bytes.fromhex(publicSSH),
-                'private_key': bytes.fromhex(privateSSH)
-            }
+        publicSSH = self.publicKey.public_bytes(
+            encoding=serialization.Encoding.OpenSSH,
+            format=serialization.PublicFormat.OpenSSH
+        ).hex()
+
+        return {
+            'privateSSH': privateSSH,
+            'publicSSH': publicSSH
+        }
 
     def sign_message(self, message):
         """Takes message and signs it using private key"""
 
+        prehashed = hashlib.sha256(message.encode('ascii')).hexdigest()
+
         if self.privateKey != None:
             self.signature = self.privateKey.sign(
-                message.encode(),
+                bytes(prehashed.encode('ascii')),
                 padding.PSS(
                     mgf=padding.MGF1(hashes.SHA256()),
                     salt_length=padding.PSS.MAX_LENGTH
@@ -115,42 +122,47 @@ class Asymmetric:
             self.logger.error("Private key value not set")
 
 
-    def verify_message(self, message):
+    def verify_message(self, message, signature):
         """Using the currently set public key, verifies if the message was encrypted with it"""
 
-        #self.__update_keys()
+        prehashedMessage = hashlib.sha256(message.encode('ascii')).hexdigest()
+        decodedSignature = base64.b64encode(signature)
 
-        return self.publicKey.verify(
-            base64.b64encode(self.signature),
-            message.encode(),
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()),
-                salt_length=padding.PSS.MAX_LENGTH
-            ),
-            hashes.SHA256()
-        )
+        try:
+            return self.publicKey.verify(
+                decodedSignature,
+                bytes(prehashedMessage.encode('ascii')),
+                padding.PSS(
+                    mgf=padding.MGF1(hashes.SHA256()),
+                    salt_length=padding.PSS.MAX_LENGTH
+                ),
+                hashes.SHA256()
+            )
+        except InvalidSignature:
+            self.logger.error("Invalid Signature")
+            return "Invalid Signature"
 
-    def encrypt_message(self, plaintext):
+    def encrypt_message(self, message):
         """Gets a message and returns it encrypted"""
 
-        return self.publicKey.encrypt(
-            base64.b64encode(plaintext.encode()),
+        return base64.b64encode(self.publicKey.encrypt(
+            message.encode(),
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
                 label=None
             )
-        )
+        ))
 
-    def decrypt_messege(self, ciphertext):
+
+    def decrypt_messege(self, message):
         """Gets encrypted message and returns it decrypted"""
 
         return self.privateKey.decrypt(
-            ciphertext,
+            base64.b64decode(message),
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
                 label=None
             )
         )
-
