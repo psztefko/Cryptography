@@ -63,15 +63,21 @@ async def sign_message(message: str):
 
 
 @app.post("/asymmetric/verify")
-async def verify_asymmetric_public_key():
+async def verify_asymmetric_public_key(message: str):
     """Using the currently set public key, verify if the message was encrypted with it"""
+
+    return asymmetric.verify_message(message)
 
 
 @app.post("/asymmetric/encode")
 async def asymmetric_encode(message: str):
     """Sends a message and as a result returns it encrypted"""
 
+    return asymmetric.encrypt_message(message)
+
 
 @app.post("/asymmetric/decode")
 async def asymmetric_decode(message: str):
     """Sends a message and as a result returns it decrypted"""
+
+    return asymmetric.decrypt_messege(message)
