@@ -90,15 +90,13 @@ class Encrypt():
 			index += shift
 
 		self.plainText = output
+		self.logger.info("Misleading spaces added to ciphertext")
 
 	def encrypt(self) -> str:
 		"""Encrypts message using other methods"""
 
 		self.__monoalphabetic()
 		self.__encrypt_spaces()
-
-		print("Almost encrypted: " + self.plainText)
-
 		self.__insert_random_spaces()
 
 		return self.plainText

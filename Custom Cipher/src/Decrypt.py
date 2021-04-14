@@ -78,6 +78,7 @@ class Decrypt():
         """"Removes all spaces from ciphertext"""
 
         self.cipherText = self.cipherText.replace(" ", "")
+        self.logger.info("Misleading spaces removed from ciphertext")
 
     def decrypt(self):
         """Decrypts ciphertext"""
