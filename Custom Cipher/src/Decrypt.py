@@ -54,13 +54,30 @@ class Decrypt():
     def __decrypt_monoalphabetic(self) -> str:
         """Decrypts monoalphabetic cipher"""
 
+        plainText = ""
 
+        sortedEnglishLetterProbabilities = list(
+            dict(sorted(ENGLISH_LETTER_PROBABILITIES.items(), key=lambda item: item[1], reverse=True)).keys())
+        reversedEnglishLetterProbabilities = list(
+            dict(sorted(ENGLISH_LETTER_PROBABILITIES.items(), key=lambda item: item[1], reverse=False)).keys())
+
+        dictOfCombinedChars = dict(zip(reversedEnglishLetterProbabilities, sortedEnglishLetterProbabilities))
+
+        for char in self.cipherText:
+            if char != " ":
+                plainText += dictOfCombinedChars[char]
+            else:
+                plainText += " "
+
+        self.logger.info("Decrypted monoalphabetic cipher" + plainText)
+
+        self.cipherText = plainText
 
 
     def decrypt(self):
         """Decrypts ciphertext"""
 
         self.__decrypt_spaces(self.cipherText)
-
+        self.__decrypt_monoalphabetic()
 
         return self.cipherText
