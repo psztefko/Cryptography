@@ -1,5 +1,6 @@
-from string import ascii_lowercase
-
+import logging
+from string import ascii_lowercase, punctuation
+import random
 
 ENGLISH_LETTER_PROBABILITIES = {
 		"a":0.08167, "b":0.01492, "c":0.02782, "d":0.04253, "e":0.12702, "f":0.02228, "g":0.02015, "h":0.06094, "i":0.06966, "j":0.00153, "k":0.00772, "l":0.04025, "m":0.02406,
@@ -8,9 +9,11 @@ ENGLISH_LETTER_PROBABILITIES = {
 
 class Encrypt():
 
+	logger = logging.getLogger('encrypt')
+	logging.basicConfig(level=logging.DEBUG)
 
 	def __init__(self, plainText: str):
-		self.plainText = plainText
+		self.plainText = plainText.lower()
 
 
 	def __count_frequency(self):
@@ -22,14 +25,28 @@ class Encrypt():
 			if char != " " and char in charsFreq:
 				charsFreq[char] += 1
 
+		self.logger.info("Counted character frequency")
 
 		return charsFreq
 
+	def __remove_spaces(self, text):
+		"""Replaces every space in text with randomly generated characters"""
 
+		output = ""
 
-	def monoalphabetic(self) -> str:
+		for char in text:
+			if char != " ":
+				output += char
+			else:
+				output += "".join(
+					[random.choice(punctuation)] + [random.choice(ascii_lowercase)] + [random.choice(punctuation)])
+
+		self.logger.info("Removed spaces from text")
+
+		return output
+
+	def __monoalphabetic(self) -> str:
 		"""Swaps letters from plaintext with high occurency to less frequent used ones"""
-
 
 		ciphertext = ""
 
@@ -44,5 +61,12 @@ class Encrypt():
 			else:
 				ciphertext += " "
 
-		print(ciphertext)
+		self.logger.info("Encrypted text using monoalphabetic cipher" + ciphertext)
+
 		return ciphertext
+
+
+	def encrypt(self) -> str:
+		"""Encrypts message using other methods"""
+
+		return self.__remove_spaces(self.__monoalphabetic())
