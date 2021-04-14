@@ -12,6 +12,7 @@ class Encrypt():
 	logger = logging.getLogger('encrypt')
 	logging.basicConfig(level=logging.DEBUG)
 
+
 	def __init__(self, plainText: str):
 		self.plainText = plainText.lower()
 
@@ -29,31 +30,33 @@ class Encrypt():
 
 		return charsFreq
 
-	def __remove_spaces(self, text):
+	def __remove_spaces(self):
 		"""Replaces every space in text with randomly generated characters"""
 
 		output = ""
 
-		for char in text:
+		for char in self.plainText:
 			if char != " ":
 				output += char
 			else:
 				output += "".join(
 					[random.choice(punctuation)] + [random.choice(ascii_lowercase)] + [random.choice(punctuation)])
 
+		self.plainText = output
 		self.logger.info("Removed spaces from text")
 
-		return output
 
-	def __monoalphabetic(self) -> str:
+	def __monoalphabetic(self):
 		"""Swaps letters from plaintext with high occurency to less frequent used ones"""
 
 		ciphertext = ""
 
-		plainTextFrequencies = list(dict(sorted(self.__count_frequency().items(), key=lambda item: item[1], reverse=True)).keys())
-		sortedEnglishLetterProbabilities = list(dict(sorted(ENGLISH_LETTER_PROBABILITIES.items(), key=lambda item: item[1], reverse=True)).keys())
+		sortedEnglishLetterProbabilities = list(
+			dict(sorted(ENGLISH_LETTER_PROBABILITIES.items(), key=lambda item: item[1], reverse=True)).keys())
+		reversedEnglishLetterProbabilities = list(
+			dict(sorted(ENGLISH_LETTER_PROBABILITIES.items(), key=lambda item: item[1], reverse=False)).keys())
 
-		dictOfCombinedChars = dict(zip(plainTextFrequencies, sortedEnglishLetterProbabilities))
+		dictOfCombinedChars = dict(zip(sortedEnglishLetterProbabilities, reversedEnglishLetterProbabilities))
 
 		for char in self.plainText:
 			if char != " ":
@@ -61,12 +64,15 @@ class Encrypt():
 			else:
 				ciphertext += " "
 
-		self.logger.info("Encrypted text using monoalphabetic cipher" + ciphertext)
+		self.plainText = ciphertext
 
-		return ciphertext
+		self.logger.info("Encrypted text using monoalphabetic cipher" + ciphertext)
 
 
 	def encrypt(self) -> str:
 		"""Encrypts message using other methods"""
 
-		return self.__remove_spaces(self.__monoalphabetic())
+		self.__monoalphabetic()
+		self.__remove_spaces()
+
+		return self.plainText
