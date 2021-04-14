@@ -1,6 +1,7 @@
 import logging
 from string import ascii_lowercase, punctuation
 import random
+import numpy
 
 ENGLISH_LETTER_PROBABILITIES = {
 		"a":0.08167, "b":0.01492, "c":0.02782, "d":0.04253, "e":0.12702, "f":0.02228, "g":0.02015, "h":0.06094, "i":0.06966, "j":0.00153, "k":0.00772, "l":0.04025, "m":0.02406,
@@ -30,7 +31,7 @@ class Encrypt():
 
 		return charsFreq
 
-	def __remove_spaces(self):
+	def __encrypt_spaces(self):
 		"""Replaces every space in text with randomly generated characters"""
 
 		output = ""
@@ -65,14 +66,39 @@ class Encrypt():
 				ciphertext += " "
 
 		self.plainText = ciphertext
+		self.logger.info("Encrypted text using monoalphabetic cipher")
 
-		self.logger.info("Encrypted text using monoalphabetic cipher" + ciphertext)
 
+	def __insert_random_spaces(self):
+		"""Inserts spaces randomly to mislead code breaker"""
+
+		output = ""
+		index = 0
+
+		while index < len(self.plainText):
+			shift = numpy.random.choice(numpy.arange(3, 11), p=[0.07, 0.1, 0.14, 0.16, 0.16, 0.15, 0.12, 0.1])
+
+			if index + shift < len(self.plainText):
+				for i in range(shift):
+					output += self.plainText[index + i]
+
+				output += " "
+			else:
+				for i in range(len(self.plainText) - index):
+					output += self.plainText[index + i]
+
+			index += shift
+
+		self.plainText = output
 
 	def encrypt(self) -> str:
 		"""Encrypts message using other methods"""
 
 		self.__monoalphabetic()
-		self.__remove_spaces()
+		self.__encrypt_spaces()
+
+		print("Almost encrypted: " + self.plainText)
+
+		self.__insert_random_spaces()
 
 		return self.plainText

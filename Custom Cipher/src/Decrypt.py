@@ -41,14 +41,14 @@ class Decrypt():
                 if text[index + 1] in ascii_lowercase:
                     if text[index + 2] in punctuation:
                         output += " "
-                        index = index + 2
+                        index += 2
             else:
                 output += text[index]
 
             index += 1
 
         self.cipherText = output
-        self.logger.info("Added spaces to text")
+        self.logger.info("Decrypted spaces in text")
 
 
     def __decrypt_monoalphabetic(self) -> str:
@@ -69,14 +69,20 @@ class Decrypt():
             else:
                 plainText += " "
 
-        self.logger.info("Decrypted monoalphabetic cipher" + plainText)
 
         self.cipherText = plainText
+        self.logger.info("Decrypted monoalphabetic cipher")
 
+
+    def __remove_spaces(self):
+        """"Removes all spaces from ciphertext"""
+
+        self.cipherText = self.cipherText.replace(" ", "")
 
     def decrypt(self):
         """Decrypts ciphertext"""
 
+        self.__remove_spaces()
         self.__decrypt_spaces(self.cipherText)
         self.__decrypt_monoalphabetic()
 
