@@ -16,6 +16,7 @@ class Encrypt():
 
 	def __init__(self, plainText: str):
 		self.plainText = plainText.lower()
+		self.prefix = None
 
 
 	def __count_frequency(self):
@@ -76,6 +77,7 @@ class Encrypt():
 		index = 0
 
 		while index < len(self.plainText):
+			#generates the length between spaces using the word length distribution in English language
 			shift = numpy.random.choice(numpy.arange(3, 11), p=[0.07, 0.1, 0.14, 0.16, 0.16, 0.15, 0.12, 0.1])
 
 			if index + shift < len(self.plainText):
@@ -92,11 +94,32 @@ class Encrypt():
 		self.plainText = output
 		self.logger.info("Misleading spaces added to ciphertext")
 
+
+	def __transpose_text(self):
+		"""Transposes text"""
+
+		key = random.randint(10, 19)
+		transposedText = [""] * key
+
+		for column in range(key):
+			pointer = column
+
+			while pointer < len(self.plainText):
+				transposedText[column] += self.plainText[pointer]
+				pointer += key
+
+		self.plainText = ''.join(transposedText)
+		self.prefix = str(key)
+		self.logger.info("Transposed text")
+
+
 	def encrypt(self) -> str:
 		"""Encrypts message using other methods"""
 
 		self.__monoalphabetic()
 		self.__encrypt_spaces()
+		self.__transpose_text()
+		self.plainText = self.prefix + self.plainText
 		self.__insert_random_spaces()
 
 		return self.plainText
