@@ -1,7 +1,6 @@
 from src.Decrypt import Decrypt
 from src.Encrypt import Encrypt
 
-
 if __name__ == '__main__':
 
     f = open("sampleText.txt", "r")
