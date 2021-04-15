@@ -1,4 +1,5 @@
 import logging
+import math
 from string import ascii_lowercase, punctuation
 import random
 
@@ -13,7 +14,8 @@ class Decrypt():
     logging.basicConfig(level=logging.DEBUG)
 
     def __init__(self, cipherText: str):
-        self.cipherText = cipherText
+        self.cipherText = cipherText[2:]
+        self.key = int(cipherText[0:2])
 
     def __count_frequency(self):
         """Creates dictionary of chars with frequency of their occurrences"""
@@ -80,10 +82,36 @@ class Decrypt():
         self.cipherText = self.cipherText.replace(" ", "")
         self.logger.info("Misleading spaces removed from ciphertext")
 
+
+    def __decode_transposition(self):
+        """Decrypts transposition using key hidden in ciphertext prefix"""
+
+        numOfColumns = math.ceil(len(self.cipherText) / self.key)
+        numOfRows = self.key
+        numOfShadedBoxes = (numOfColumns * numOfRows) - len(self.cipherText)
+
+        plaintext = [''] * numOfColumns
+
+        col = 0
+        row = 0
+
+        for char in self.cipherText:
+            plaintext[col] += char
+            col += 1
+
+            if (col == numOfColumns) or (col == numOfColumns - 1 and row >= numOfRows - numOfShadedBoxes):
+                col = 0
+                row += 1
+
+        self.cipherText = ''.join(plaintext)
+        self.logger.info("Transposiotion decoded successfully")
+
+
     def decrypt(self):
         """Decrypts ciphertext"""
 
         self.__remove_spaces()
+        self.__decode_transposition()
         self.__decrypt_spaces(self.cipherText)
         self.__decrypt_monoalphabetic()
 
