@@ -14,35 +14,33 @@ class Decrypt():
     logging.basicConfig(level=logging.DEBUG)
 
     def __init__(self, cipherText: str):
-        self.cipherText = cipherText[2:]
-        self.key = int(cipherText[0:2])
+        self.cipherText = cipherText[1:]
 
-    def __count_frequency(self):
-        """Creates dictionary of chars with frequency of their occurrences"""
+        #decodes key from first character of ciphertext
+        prefix = cipherText[:1]
+        for index in range(len(ascii_lowercase)):
+            if ascii_lowercase[index] == prefix:
+                self.key = index + 11
 
-        charsFreq = {char: 0 for char in ascii_lowercase}
 
-        for char in self.cipherText:
-            if char != " " and char in charsFreq:
-                charsFreq[char] += 1
+    def __remove_spaces(self):
+        """"Removes all spaces from ciphertext"""
 
-        self.logger.info("Counted character frequency")
-
-        return charsFreq
+        self.cipherText = self.cipherText.replace(" ", "")
+        self.logger.info("Misleading spaces removed from ciphertext")
 
 
     def __decrypt_spaces(self, text):
         """Decrypts all spaces"""
 
-        output = ""
-
+        output = ''
         index = 0
-        while index < len(text):
-
+        #searches for encrypted space pattern and swaps it to normal space character
+        while index < len(text) - 2:
             if text[index] in punctuation:
                 if text[index + 1] in ascii_lowercase:
                     if text[index + 2] in punctuation:
-                        output += " "
+                        output += ' '
                         index += 2
             else:
                 output += text[index]
@@ -50,7 +48,7 @@ class Decrypt():
             index += 1
 
         self.cipherText = output
-        self.logger.info("Decrypted spaces in text")
+        self.logger.info('Decrypted spaces in text')
 
 
     def __decrypt_monoalphabetic(self) -> str:
@@ -73,14 +71,7 @@ class Decrypt():
 
 
         self.cipherText = plainText
-        self.logger.info("Decrypted monoalphabetic cipher")
-
-
-    def __remove_spaces(self):
-        """"Removes all spaces from ciphertext"""
-
-        self.cipherText = self.cipherText.replace(" ", "")
-        self.logger.info("Misleading spaces removed from ciphertext")
+        self.logger.info('Decrypted monoalphabetic cipher')
 
 
     def __decode_transposition(self):
@@ -104,7 +95,7 @@ class Decrypt():
                 row += 1
 
         self.cipherText = ''.join(plaintext)
-        self.logger.info("Transposiotion decoded successfully")
+        self.logger.info('Transposiotion decoded successfully')
 
 
     def decrypt(self):
@@ -115,6 +106,6 @@ class Decrypt():
         self.__decrypt_spaces(self.cipherText)
         self.__decrypt_monoalphabetic()
 
-        self.logger.info("Message successfully decrypted")
+        self.logger.info('Message successfully decrypted')
 
         return self.cipherText

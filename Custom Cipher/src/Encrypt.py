@@ -15,49 +15,28 @@ class Encrypt():
 
 
 	def __init__(self, plainText: str):
+		self.plainText = ''
 
-		self.plainText = ""
-
+		#removes from plaintext everything except of alphanumeric and spaces
 		for char in plainText:
-			if char.isalpha() or char == " ":
+			if char.isalpha() or char == ' ':
 				self.plainText += char.lower()
 
 		self.prefix = None
 
 
-	def __count_frequency(self):
-		"""Creates dictionary of chars with frequency of their occurrences"""
-
-		charsFreq = {char: 0 for char in ascii_lowercase}
-
-		for char in self.plainText:
-			if char != " " and char in charsFreq:
-				charsFreq[char] += 1
-
-		self.logger.info("Counted character frequency")
-
-		return charsFreq
-
 	def __encrypt_spaces(self):
 		"""Replaces every space in text with randomly generated characters"""
 
-		output = ""
-
-		for char in self.plainText:
-			if char != " ":
-				output += char
-			else:
-				output += "".join(
-					[random.choice(punctuation)] + [random.choice(ascii_lowercase)] + [random.choice(punctuation)])
-
-		self.plainText = output
-		self.logger.info("Removed spaces from text")
+		self.plainText = self.plainText.replace(' ', ''.join(
+					[random.choice(punctuation)] + [random.choice(ascii_lowercase)] + [random.choice(punctuation)]))
+		self.logger.info('Encrypted every spaces in text')
 
 
 	def __monoalphabetic(self):
 		"""Swaps letters from plaintext with high occurency to less frequent used ones"""
 
-		ciphertext = ""
+		ciphertext = ''
 
 		sortedEnglishLetterProbabilities = list(
 			dict(sorted(ENGLISH_LETTER_PROBABILITIES.items(), key=lambda item: item[1], reverse=True)).keys())
@@ -67,19 +46,19 @@ class Encrypt():
 		dictOfCombinedChars = dict(zip(sortedEnglishLetterProbabilities, reversedEnglishLetterProbabilities))
 
 		for char in self.plainText:
-			if char != " ":
+			if char != ' ':
 				ciphertext += dictOfCombinedChars[char]
 			else:
-				ciphertext += " "
+				ciphertext += ' '
 
 		self.plainText = ciphertext
-		self.logger.info("Encrypted text using monoalphabetic cipher")
+		self.logger.info('Encrypted text using monoalphabetic cipher')
 
 
 	def __insert_random_spaces(self):
 		"""Inserts spaces randomly to mislead code breaker"""
 
-		output = ""
+		output = ''
 		index = 0
 
 		while index < len(self.plainText):
@@ -90,7 +69,7 @@ class Encrypt():
 				for i in range(shift):
 					output += self.plainText[index + i]
 
-				output += " "
+				output += ' '
 			else:
 				for i in range(len(self.plainText) - index):
 					output += self.plainText[index + i]
@@ -98,14 +77,14 @@ class Encrypt():
 			index += shift
 
 		self.plainText = output
-		self.logger.info("Misleading spaces added to ciphertext")
+		self.logger.info('Misleading spaces added to ciphertext')
 
 
 	def __transpose_text(self):
 		"""Transposes text"""
 
-		key = random.randint(10, 19)
-		transposedText = [""] * key
+		key = random.randint(10, 36)
+		transposedText = [''] * key
 
 		for column in range(key):
 			pointer = column
@@ -115,8 +94,8 @@ class Encrypt():
 				pointer += key
 
 		self.plainText = ''.join(transposedText)
-		self.prefix = str(key)
-		self.logger.info("Transposed text")
+		self.prefix = ascii_lowercase[key - 11]
+		self.logger.info('Transposed text')
 
 
 	def encrypt(self) -> str:
@@ -128,6 +107,6 @@ class Encrypt():
 		self.plainText = self.prefix + self.plainText
 		self.__insert_random_spaces()
 
-		self.logger.info("Message successfully encrypted")
+		self.logger.info('Message successfully encrypted')
 
 		return self.plainText
