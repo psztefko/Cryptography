@@ -4,7 +4,9 @@ from src.Encrypt import Encrypt
 
 if __name__ == '__main__':
 
-    enc = Encrypt("Tekst testowy losowy ruzny")
+    f = open("sampleText.txt", "r")
+
+    enc = Encrypt(f.read())
     encrypted = enc.encrypt()
     dec = Decrypt(encrypted)
 
