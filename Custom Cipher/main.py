@@ -9,6 +9,7 @@ if __name__ == '__main__':
     enc = Encrypt(f.read())
     encrypted = enc.encrypt()
     dec = Decrypt(encrypted)
+    decrypted = dec.decrypt()
 
     print("Encrypted message: " + encrypted)
-    print("Decrypted message: " + dec.decrypt())
+    print("Decrypted message: " + decrypted)

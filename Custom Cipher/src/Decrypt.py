@@ -115,4 +115,6 @@ class Decrypt():
         self.__decrypt_spaces(self.cipherText)
         self.__decrypt_monoalphabetic()
 
+        self.logger.info("Message successfully decrypted")
+
         return self.cipherText

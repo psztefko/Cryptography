@@ -15,7 +15,13 @@ class Encrypt():
 
 
 	def __init__(self, plainText: str):
-		self.plainText = plainText.lower()
+
+		self.plainText = ""
+
+		for char in plainText:
+			if char.isalpha() or char == " ":
+				self.plainText += char.lower()
+
 		self.prefix = None
 
 
@@ -121,5 +127,7 @@ class Encrypt():
 		self.__transpose_text()
 		self.plainText = self.prefix + self.plainText
 		self.__insert_random_spaces()
+
+		self.logger.info("Message successfully encrypted")
 
 		return self.plainText
