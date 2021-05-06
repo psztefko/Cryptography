@@ -1,5 +1,5 @@
 import time
-import Block
+from src.Block import Block
 
 class Blockchain:
 
@@ -10,16 +10,22 @@ class Blockchain:
         self.create_genesis_block()
 
     def create_genesis_block(self):
+        """Creates first block in a chain"""
+
         genesis_block = Block(0, [], time.time(), '0')
         genesis_block.hash = genesis_block.compute_hash()
         self.chain.append(genesis_block)
 
     @property
     def last_block(self):
+        """Returns last block in chain"""
+
         return self.chain[-1]
 
     difficulty = 2
     def proof_of_work(self, block):
+        """Makes it progressively more difficult to create new block
+        which makes almost impossible to """
         block.nonce = 0
         computed_hash = block.compute_hash()
         while not computed_hash.startswith('0' * Blockchain.difficulty):
